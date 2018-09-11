@@ -1,6 +1,6 @@
 Package: prettycode
 Title: Pretty Print R Code in the Terminal
-Version: 1.0.1
+Version: 1.0.2
 Author: Gábor Csárdi
 Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>
 Description: Replace the standard print method for functions with one that
@@ -10,11 +10,11 @@ License: MIT + file LICENSE
 LazyData: true
 URL: https://github.com/r-lib/prettycode#readme
 BugReports: https://github.com/r-lib/prettycode/issues
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
 Imports: crayon, utils, withr
 Suggests: covr, mockery, testthat
 Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2017-12-11 23:26:56 UTC; gaborcsardi
+Packaged: 2018-09-11 10:53:52 UTC; gaborcsardi
 Repository: CRAN
-Date/Publication: 2017-12-12 22:33:59 UTC
+Date/Publication: 2018-09-11 11:10:02 UTC
