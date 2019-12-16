@@ -8,6 +8,12 @@
 
 prettycode <- function() {
   register_s3_method("prettycode", "print", "function", print.function)
+  if (! obj_name %in% search()) {
+    env <- new.env(parent = emptyenv())
+    env$print.function <- print.function
+    env$`!` <- exclam
+    do.call("attach", list(env, name = obj_name))
+  }
 }
 
 register_s3_method <- function(pkg, generic, class, fun = NULL) {
@@ -48,7 +54,6 @@ register_s3_method <- function(pkg, generic, class, fun = NULL) {
 #'   generic.
 #' @return The function, invisibly.
 #'
-#' @importFrom withr with_envvar
 #' @importFrom utils capture.output
 
 print.function <- function(x, useSource = TRUE,
@@ -78,10 +83,14 @@ print.function <- function(x, useSource = TRUE,
   } else {
     cat(hisrc, sep = "\n", file = tmp <- tempfile())
     on.exit(unlink(tmp), add = TRUE)
-    with_envvar(
-      c("LESS" = "-R", action = "prefix"),
-      file.show(tmp)
-    )
+    less <- Sys.getenv("LESS", NA_character_)
+    if (is.na(less)) {
+      on.exit(Sys.unsetenv("LESS"), add = TRUE)
+    } else {
+      on.exit(Sys.setenv(LESS = less), add = TRUE)
+    }
+    Sys.setenv(LESS = paste0("-R", if (!is.na(less)) less))
+    file.show(tmp)
   }
 
   invisible(x)
@@ -89,12 +98,8 @@ print.function <- function(x, useSource = TRUE,
 
 obj_name <- "tools:prettycode"
 
-.onAttach <- function(libname, pkgname) {
-  if (! obj_name %in% search()) {
-    env <- new.env(parent = emptyenv())
-    env$print.function <- print.function
-    do.call("attach", list(env, name = obj_name))
-  }
+exclam <- function(x) {
+  if (is.function(x)) print.function(x) else base::`!`(x)
 }
 
 .onUnload <- function(package) {
